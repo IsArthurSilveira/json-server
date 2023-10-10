@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Cadastrar Pedido</title>
+</head>
+<body>
+  <h1>Cadastrar Pedido</h1>
+  <form id="cadastrarPedidoForm">
+    
+    <select id="nome_usuario" class="form-select" name="nome_usuario" required>
+             
+  
+    </select><br><br>
+
+    <select id="nome_livro" class="form-select" name="nome_livro" required>
+             
+    </select><br><br>
+
+    <label for="data_emprestimo">Data de Empréstimo:</label>
+    <input type="date" id="data_emprestimo" name="data_emprestimo" required><br><br>
+
+    <label for="data_devolucao">Data de Devolução:</label>
+    <input type="date" id="data_devolucao" name="data_devolucao" required><br><br>
+    
+    <input type="submit" value="Cadastrar Pedido">
+  </form>
+
+  <script>
+    const form = document.getElementById('cadastrarPedidoForm');
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+
+      const data = new FormData(form);
+
+      fetch('http://localhost:3000/pedidos', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(Object.fromEntries(data)),
+      })
+      .then(response => response.json())
+      .then(data => {
+        alert('Pedido cadastrado com sucesso!');
+        // Você pode redirecionar o usuário para outra página ou fazer qualquer ação necessária aqui.
+      })
+      .catch(error => {
+        console.error('Erro ao cadastrar pedido:', error);
+      });
+    });
+
+
+    async function carregarUsuario() {
+            try {
+                const response = await fetch('http://localhost:3000/usuarios');
+                const paises = await response.json();
+
+                const selectPaises = document.getElementById('nome_usuario');
+
+                paises.forEach(item => {
+                    const option = document.createElement('option');
+                    option.value = item.nome; // Ou algum valor único do país
+                    option.text = item.nome; // Ou algum campo que contenha o nome do país
+                    selectPaises.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Erro ao buscar usuario:', error);
+            }
+        }
+
+        carregarUsuario();
+
+        async function carregarLivro() {
+            try {
+                const response = await fetch('http://localhost:3000/livros');
+                const paises = await response.json();
+
+                const selectPaises = document.getElementById('nome_livro');
+
+                paises.forEach(item => {
+                    const option = document.createElement('option');
+                    option.value = item.id; // Ou algum valor único do país
+                    option.text = item.titulo; // Ou algum campo que contenha o nome do país
+                    selectPaises.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Erro ao buscar usuario:', error);
+            }
+        }
+
+        carregarLivro();
+  </script>
+</body>
+</html>
